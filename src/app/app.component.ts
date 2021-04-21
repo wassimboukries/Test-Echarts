@@ -173,7 +173,6 @@ export class AppComponent implements OnInit {
     }
 
     var pos = [0,33.333,66.6666];
-    
     var optionPie ={
         tooltip: {
             trigger : 'item',
