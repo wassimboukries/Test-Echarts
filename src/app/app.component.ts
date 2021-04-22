@@ -15,7 +15,7 @@ export class AppComponent implements OnInit {
   title = 'my-dream-app';
   currentType :string = 'line';
   types :Array<string> = ['line', 'bar', 'pie', 'radar', 'surface'];
-  datas : Array<string> = ['data1', 'data3', 'data4', 'data5', 'data6'];
+  datas : Array<string> = ['data1', 'data3', 'data4', 'data5', 'data6', 'data7'];
   currentData = 'data1';
   myChart : any;
   myChart2 : any;
@@ -31,8 +31,12 @@ export class AppComponent implements OnInit {
   }
 
   render() {
-
+    this.myChart.dispose();
+    
+    this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined,{renderer: 'svg'});
+    this.myChart.showLoading();
     var data :any;
+
 
     if (this.currentData === 'data1'){
         data = this.data1;
@@ -48,6 +52,9 @@ export class AppComponent implements OnInit {
     }
     if (this.currentData === 'data6'){
         data = this.data6
+    }
+    if (this.currentData === 'data7'){
+        data = this.data7
     }
 
 
@@ -102,7 +109,7 @@ export class AppComponent implements OnInit {
         series: data.graphs.map((element : any, index : number) => { var temp = element.valueField; return {
           name : element.title,
           type : this.currentType,
-          data : Object.values(data.datas.map((element : any) => {return Number(element[temp])})),
+          data : data.datas.map((element : any) => {return Number(element[temp])}),
           itemStyle : {
             color : data.colors[index]
           },
@@ -229,7 +236,18 @@ export class AppComponent implements OnInit {
         option = optionSurface;
     console.log(option);
     this.myChart.clear();//this.myChart2.clear();
+    
     this.myChart.setOption(option);
+    this.myChart.on('click', 'series', 
+        (params : any)=>{
+            console.log(params);
+            if (this.currentData === 'data6')
+            {
+                this.currentData = "data7";
+                this.render();
+            }
+        });
+    this.myChart.hideLoading();
     //this.myChart2.setOption(optionTest);
     //console.log(getKeyValue("name")(test));
     //console.log(Object.values(this.data.graphs[0].indicator.lines[0])[2]);
@@ -3073,6 +3091,380 @@ export class AppComponent implements OnInit {
         "colors": [
             "#F44336",
             "#E91E63"
+        ]
+    }
+
+    data7 = {
+        "root": {},
+        "data": {},
+        "meta": {},
+        "metaGlobal": {},
+        "label": "Test objectif & réalisé",
+        "periodes": [
+            {
+                "id": "M",
+                "label": "Mois"
+            },
+            {
+                "id": "Q",
+                "label": "Trimestre"
+            },
+            {
+                "id": "S",
+                "label": "Semestre"
+            },
+            {
+                "id": "Y",
+                "label": "Année"
+            },
+            {
+                "id": "A",
+                "label": "Aucune"
+            },
+            {
+                "id": "N",
+                "label": "Niveau"
+            }
+        ],
+        "times": [],
+        "unusedLevels": [
+            {
+                "id": 2,
+                "label": "Tiers"
+            },
+            {
+                "id": 3,
+                "label": "Département"
+            },
+            {
+                "id": 4,
+                "label": "Commercial"
+            }
+        ],
+        "indicators": [
+            {
+                "numind": "QINFERENCESRVDEVDVT23",
+                "docind": "indiaf_qi23.html",
+                "appind": "IAF",
+                "graph": "column",
+                "libind": "Test objectif ventes",
+                "libuni": "€",
+                "psv": "O",
+                "troisd": "N",
+                "vfival": "O",
+                "vmeval": "O",
+                "vpeval": "O",
+                "extmin": "0",
+                "prmsync": "",
+                "lines": [
+                    {
+                        "startDate": "20120601",
+                        "endDate": "20120630",
+                        "Jardinage": "434664",
+                        "Prêt-à-porter": "412230",
+                        "Boissons": "136847",
+                        "Alimentation": "38230",
+                        "Bricolage": "23087",
+                        "Chaussures": "18090",
+                        "Papeterie": "945"
+                    }
+                ],
+                "colors": []
+            }
+        ],
+        "usedAttributes": [
+            {
+                "id": "Jardinage",
+                "label": ""
+            },
+            {
+                "id": "Prêt-à-porter",
+                "label": ""
+            },
+            {
+                "id": "Boissons",
+                "label": ""
+            },
+            {
+                "id": "Alimentation",
+                "label": ""
+            },
+            {
+                "id": "Bricolage",
+                "label": ""
+            },
+            {
+                "id": "Chaussures",
+                "label": ""
+            },
+            {
+                "id": "Papeterie",
+                "label": ""
+            }
+        ],
+        "datas": [
+            {
+                "qStartDate": "20120601",
+                "qEndDate": "20120630",
+                "§DATE§": "20120601",
+                "Jardinage_0": "434664",
+                "Prêt-à-porter_0": "412230",
+                "Boissons_0": "136847",
+                "Alimentation_0": "38230",
+                "Bricolage_0": "23087",
+                "Chaussures_0": "18090",
+                "Papeterie_0": "945"
+            }
+        ],
+        "graphs": [
+            {
+                "valueField": "Jardinage_0",
+                "title": "Jardinage",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            },
+            {
+                "valueField": "Prêt-à-porter_0",
+                "title": "Prêt-à-porter",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            },
+            {
+                "valueField": "Boissons_0",
+                "title": "Boissons",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            },
+            {
+                "valueField": "Alimentation_0",
+                "title": "Alimentation",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            },
+            {
+                "valueField": "Bricolage_0",
+                "title": "Bricolage",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            },
+            {
+                "valueField": "Chaussures_0",
+                "title": "Chaussures",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            },
+            {
+                "valueField": "Papeterie_0",
+                "title": "Papeterie",
+                "indicator": {
+                    "numind": "QINFERENCESRVDEVDVT23",
+                    "docind": "indiaf_qi23.html",
+                    "appind": "IAF",
+                    "graph": "column",
+                    "libind": "Test objectif ventes",
+                    "libuni": "€",
+                    "psv": "O",
+                    "troisd": "N",
+                    "vfival": "O",
+                    "vmeval": "O",
+                    "vpeval": "O",
+                    "extmin": "0",
+                    "prmsync": "",
+                    "lines": [
+                        {
+                            "startDate": "20120601",
+                            "endDate": "20120630",
+                            "Jardinage": "434664",
+                            "Prêt-à-porter": "412230",
+                            "Boissons": "136847",
+                            "Alimentation": "38230",
+                            "Bricolage": "23087",
+                            "Chaussures": "18090",
+                            "Papeterie": "945"
+                        }
+                    ],
+                    "colors": []
+                },
+                "indicatorId": 0
+            }
+        ],
+        "defaultYAxis": "G",
+        "colors": [
+            "#F44336",
+            "#E91E63",
+            "#9C27B0",
+            "#673AB7",
+            "#3f51B5",
+            "#2196F3",
+            "#03A9F4"
         ]
     }
 }
