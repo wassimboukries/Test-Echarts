@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import * as echarts from 'echarts';
-import { color } from 'echarts';
 import * as moment from 'moment';
-import { element } from 'protractor';
 
 
 @Component({
@@ -20,8 +18,11 @@ export class AppComponent implements OnInit {
   myChart : any;
   myChart2 : any;
   isLine : any = true;
+  lineType : string = 'aucun';
   isCourbe : boolean = false;
   isStep : boolean = false;
+  isSurface : boolean = false;
+  isDataSet : boolean =false;
 
   ngOnInit(){
     this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined,{renderer: 'svg'});
@@ -32,11 +33,26 @@ export class AppComponent implements OnInit {
 
   render() {
     this.myChart.dispose();
-    
+
     this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined,{renderer: 'svg'});
     this.myChart.showLoading();
     var data :any;
 
+    if (this.lineType === 'courbe'){
+        this.isSurface = this.isStep = false;
+        this.isCourbe = true;
+    }
+    if (this.lineType === 'surface'){
+        this.isCourbe = this.isStep = false;
+        this.isSurface = true;
+    }
+    if (this.lineType === 'step'){
+        this.isCourbe = this.isSurface = false;
+        this.isStep = true;
+    }
+    if (this.lineType === ' aucun'){
+        this.isCourbe = this.isSurface = this.isStep =false;
+    }
 
     if (this.currentData === 'data1'){
         data = this.data1;
@@ -57,6 +73,7 @@ export class AppComponent implements OnInit {
         data = this.data7
     }
 
+    var surface = (this.isSurface == true)? {} : undefined;
 
     // specify chart configuration item and data
     var optionTest = {
@@ -67,17 +84,27 @@ export class AppComponent implements OnInit {
         //dimensions : 
         dataset: {
         // Provide data.
-            source: [["Date"].concat(this.data3.graphs.map((element, index) => {return element.title})),
-            this.data3.graphs.map((element, index) => {return Number(Object.values(this.data3.datas[0])[index+2])})]       //.indicator.lines.map((element, index) => { return [element.startDate.substring(0,4)+"-"+element.startDate.substring(4,6)+"-"+element.startDate.substring(6),Number(element.Total)] })
+            source: [["Date"].concat(data.datas.map((el:any) => el['§DATE§'].substring(0,4) + "-"+ el['§DATE§'].substring(4,6)+"-" + el['§DATE§'].substring(6)))].concat(
+            data.graphs.map((element :any, index: any) => {var temp = element.valueField; return [element.title].concat(data.datas.map((el : any) => {return Number(el[temp])}))}))      //.indicator.lines.map((element, index) => { return [element.startDate.substring(0,4)+"-"+element.startDate.substring(4,6)+"-"+element.startDate.substring(6),Number(element.Total)] })
         },
         // Declare X axis, which is a category axis, mapping
         // to the first column by default.
-        xAxis: {type: 'category'},
+        xAxis: {
+            type: 'category',
+            //data : data.datas.map((el:any) => el['§DATE§'].substring(0,4) + "-"+ el['§DATE§'].substring(4,6)+"-" + el['§DATE§'].substring(6)),
+        },
         // Declare Y axis, which is a value axis.
         yAxis: {},
         // Declare several series, each of them mapped to a
         // column of the dataset by default.
-        series: this.data3.graphs.map((element, index) => { return {type : this.currentType, color : this.data3.colors[index]}})
+        series: data.graphs.map((element : any, index : number) => { return {
+            type : this.currentType,
+            seriesLayoutBy: 'row',
+            areaStyle : surface,
+            step : this.isStep,
+            smooth : this.isCourbe,
+            color : data.colors[index],
+        };})
     };
 
     let option : any= {
@@ -89,9 +116,10 @@ export class AppComponent implements OnInit {
           trigger : 'item',
         },
         legend: {
-            type : 'scroll',
+            type : "scroll",
             data: data.graphs.map((element: any) => element.title.toString()),
             top : 'bottom',
+            height : 50,
         },
     
         xAxis: {
@@ -113,6 +141,7 @@ export class AppComponent implements OnInit {
           itemStyle : {
             color : data.colors[index]
           },
+          areaStyle : surface,
           smooth: this.isCourbe,
           step : this.isStep && "middle",
         };}),
@@ -174,12 +203,27 @@ export class AppComponent implements OnInit {
             name : element.title,
             data: Object.values(data.datas.map((el : any) => { return Number(el[temp]) })),
             type: 'line',
-            areaStyle: {},
+            //areaStyle: {},
             color : data.colors[index],
         };}),
     }
 
-    var pos = [0,33.333,66.6666];
+    var position : Array<number> = [];
+
+    var n = 0;
+    for (let i=0; i<data.graphs.length; ++i){
+        if (data.graphs[i].indicator.lines.length != 0)
+            n++;
+    }
+    console.log(n);
+
+    for(let i=0; i<n; ++i){
+        position.push(i/n*100);
+    }
+
+    var missedNodes = 0;
+
+    console.log(position);
     var optionPie ={
         tooltip: {
             trigger : 'item', 
@@ -189,20 +233,20 @@ export class AppComponent implements OnInit {
               //data: this.data3.graphs.map(element => element.title.toString()),
           },
 
-          series: data.graphs.map((element : any, index : any) => { var temp = element.valueField; return {
+          series: data.graphs.map((element : any, index : any) => { var temp = element.valueField; if (element.indicator.lines.length != 0) {return {
             type : "pie",
             name : element.title,
-            radius : '25%',
+            radius: '75%',
             center: ['50%', '50%'],
-            left: pos[index]+'%',
-            right: pos[index-pos.length -1]+'%',
-            data :  Object.values(data.datas.map((el : any) => { return {value : Number(el[temp]), name : el['§DATE§'].substring(0,4) + "-"+ el['§DATE§'].substring(4,6)+"-" + el['§DATE§'].substring(6)}})), //{ value : Object.values(element.indicator.lines[0])[index+2], name :element.title}}),
+            left: position[index-missedNodes]+'%',
+            right: position[position.length -1 -index -missedNodes]+'%',
+            data :  data.datas.map((el : any) => { return {value : Number(el[temp]), name : el['§DATE§'].substring(0,4) + "-"+ el['§DATE§'].substring(4,6)+"-" + el['§DATE§'].substring(6)}}), //{ value : Object.values(element.indicator.lines[0])[index+2], name :element.title}}),
             animationType: 'scale',
             animationEasing: 'elasticOut',
             animationDelay: function (idx : any) {
                 return Math.random() * 200;
             }
-          }}),
+          }} else {missedNodes++; return}}),
     };
 
     var optionRadar = {
@@ -227,13 +271,18 @@ export class AppComponent implements OnInit {
           
     }
     // use configuration item and data specified to show chart
-    
-    if (this.currentType === "pie")
+    if (this.isDataSet == true){
+        option = optionTest;
+    }
+    else {
+        if (this.currentType === "pie")
         option = optionPie;
-    if (this.currentType === "radar")
-        option = optionRadar;
-    if (this.currentType === "surface")
-        option = optionSurface;
+        if (this.currentType === "radar")
+            option = optionRadar;
+        if (this.currentType === "surface")
+            option = optionSurface;
+    }
+
     console.log(option);
     this.myChart.clear();//this.myChart2.clear();
     
@@ -258,6 +307,8 @@ export class AppComponent implements OnInit {
         this.isLine = true;
     else
         this.isLine = false;
+
+    console.log(this.isCourbe);
     this.render();
   }
 

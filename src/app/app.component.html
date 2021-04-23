@@ -11,11 +11,14 @@
       <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
     </select>
     <div *ngIf="isLine" >
-        <input type="checkbox" value="true" [(ngModel)]="isCourbe" (ngModelChange)="changeType()"> Courbe
-        <input type="checkbox" value="true" [(ngModel)]="isStep" (ngModelChange)="changeType()"> Escalier
+        <input type="radio" value="courbe" name="type" [(ngModel)]="lineType" (ngModelChange)="changeType()"> Courbe
+        <input type="radio" value="step" name="type" [(ngModel)]="lineType" (ngModelChange)="changeType()"> Escalier
+        <input type="radio" value="surface" name="type" [(ngModel)]="lineType" (ngModelChange)="changeType()"> Surface
+        <input type="radio" value="aucun" name="type" [(ngModel)]="lineType" (ngModelChange)="changeType()"> Normal
     </div>
-    <br><br>
-    <label>Choose the data:</label>
+    <br>
+    <input type="checkbox" value="true" [(ngModel)]="isDataSet" (ngModelChange)="changeType()"> DataSet
+    <br><label>Choose the data:</label>
     <select type="string" [(ngModel)]="currentData" (ngModelChange)="changeData()">
       <option *ngFor="let data of datas" [ngValue]="data">{{data}}</option>
     </select>
