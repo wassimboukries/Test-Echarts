@@ -5,7 +5,9 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
 <!-- * * * * * * * * * * End of Placeholder * * * * * * * * * * * -->
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<div id="main" style="width: 600px; min-height: 500px; margin: 70px"></div>
+    <diV style="width: 700px;">
+        <div id="main" style="width:100%; min-height: 500px; margin: 10px"></div>
+    </diV>
     <label>Choose a type:</label>
     <select type="string" [(ngModel)]="currentType" (ngModelChange)="changeType()">
       <option *ngFor="let type of types" [ngValue]="type">{{type}}</option>
