@@ -22,12 +22,13 @@ export class AppComponent implements OnInit {
     isCourbe: boolean = false;
     isStep: boolean = false;
     isSurface: boolean = false;
-    isDataSet: boolean = true;
+    isDataSet: boolean = false;
 
     ngOnInit() {
         this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined, { renderer: 'svg' });
         //this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
         //console.log()
+        moment.locale('fr');
         this.render();
     }
 
@@ -126,6 +127,7 @@ export class AppComponent implements OnInit {
             title: {
                 text: data.label
             },
+            //useUTC : true,
             graph: data.graphs,
             tooltip: {
                 trigger: 'item',
@@ -139,11 +141,14 @@ export class AppComponent implements OnInit {
 
             xAxis: {
                 type: "category",
-                data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
+                //boundaryGap : false,
+                //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
+                //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
+                //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
                 axisLabel: {
-                    formatter: (function (value: any) {
-                        moment.locale('fr');
-                        return moment(value).format('MMMM');
+                    //show  :false,
+                    formatter: (function(value :any){
+                        return moment(value).format('DD MMMM YY');
                     })
                 },
             },
@@ -153,14 +158,25 @@ export class AppComponent implements OnInit {
                 var temp = element.valueField; return {
                     name: element.title,
                     type: this.currentType,
-                    data: data.datas.map((element: any) => { return { valueField: temp, value: Number(element[temp]), qStartDate: element.qStartDate, qEndDate: element.qEndDate } }),
+                    data: data.datas.map((element: any) => { 
+                        return{ 
+                                valueField: temp, 
+                                value: [
+                                    element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
+                                    Number(element[temp])
+                                ], 
+                                qStartDate: element.qStartDate, 
+                                qEndDate: element.qEndDate,
+                                name : element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6)
+                            }
+                    }),
                     itemStyle: {
                         color: data.colors[index]
                     },
                     areaStyle: surface,
                     smooth: this.isCourbe,
                     step: this.isStep && "middle",
-                    stack : 'test'
+                    //seriesLayoutBy : 'row'
                 };
             }),
 
@@ -229,25 +245,20 @@ export class AppComponent implements OnInit {
             }),
         }
 
-        option.series[0].markArea = {
-            itemStyle: {
-                color: '#FF0000',
-                borderWidth: 1,
-                borderType: 'dashed'
-            },
+        /*option.series[0].markArea = {
             data: [
                 [
                     {
                         x: '10%',
-                        yAxis: 'min',
+                        yAxis: 0,
                     },
                     {
                         x: "90%",
-                        yAxis: 6000000,
+                        yAxis: 'average',
                     }
                 ]
             ]
-        };
+        };*/
 
         var position: Array<number> = [];
 
