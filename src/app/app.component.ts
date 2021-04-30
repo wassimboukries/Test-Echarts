@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
             this.isCourbe = this.isSurface = false;
             this.isStep = true;
         }
-        if (this.lineType === ' aucun') {
+        if (this.lineType === 'aucun') {
             this.isCourbe = this.isSurface = this.isStep = false;
         }
 
