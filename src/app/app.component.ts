@@ -146,6 +146,14 @@ export class AppComponent implements OnInit {
                     show : true,
                     type : 'line',
                     triggerTooltip : false,
+                    label : {
+                        formatter: (function(value :any){
+                            return capitalizeFirstLetter(moment(value).format('MMMM YYYY'));
+                        }),
+                    } ,
+                    handle : {
+                        show : true,
+                    }
                 },
                 type: "category",
                 boundaryGap : true,
