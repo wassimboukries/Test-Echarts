@@ -139,17 +139,25 @@ export class AppComponent implements OnInit {
                 height: 50,
             },
 
+            
+
             xAxis: {
+                axisPointer : {
+                    show : true,
+                    type : 'line',
+                    triggerTooltip : false,
+                },
                 type: "category",
-                //boundaryGap : false,
+                boundaryGap : true,
                 //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
                 axisLabel: {
                     //show  :false,
                     formatter: (function(value :any){
-                        return moment(value).format('DD MMMM YY');
-                    })
+                        return capitalizeFirstLetter(moment(value).format('MMMM YY'));
+                    }),
+                    fontSize : 10,
                 },
             },
             yAxis: {},
@@ -399,7 +407,7 @@ export class AppComponent implements OnInit {
     changeData(): void {
         this.render();
     }
-
+    
     data1 = {
         "root": {},
         "data": {},
@@ -9549,3 +9557,8 @@ export class AppComponent implements OnInit {
         ]
     }
 }
+
+function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
