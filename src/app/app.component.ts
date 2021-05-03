@@ -84,7 +84,9 @@ export class AppComponent implements OnInit {
             legend: {
                 type: "scroll",
             },
-            tooltip: {},
+            tooltip: {
+                alwaysShowContent : true,
+            },
             //dimensions : 
             dataset: {
                 // Provide data.
@@ -131,6 +133,17 @@ export class AppComponent implements OnInit {
             graph: data.graphs,
             tooltip: {
                 trigger: 'item',
+                formatter: function(params :any, ticket: any, callback:any) {
+                    return  "<div>" + 
+                        params.seriesName + 
+                        "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" + 
+                        params.color + 
+                        ";'></span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" + 
+                        parseInt(params.value[1]).toLocaleString() + 
+                        "</span></div><div>" + 
+                        params.data.evolution + 
+                        "</div>";
+                  }
             },
             legend: {
                 type: "scroll",
@@ -147,8 +160,8 @@ export class AppComponent implements OnInit {
                     type : 'line',
                     triggerTooltip : false,
                     label : {
-                        formatter: (function(value :any){
-                            return capitalizeFirstLetter(moment(value).format('MMMM YYYY'));
+                        formatter: (function(object :any){
+                            return capitalizeFirstLetter(moment(object.value).format('MMMM YYYY'));
                         }),
                     } ,
                     handle : {
@@ -168,7 +181,13 @@ export class AppComponent implements OnInit {
                     fontSize : 10,
                 },
             },
-            yAxis: {},
+            yAxis: {
+                axisLabel : {
+                    formatter: (function(value :any){
+                        return parseInt(value).toLocaleString();
+                    }),
+                }
+            },
 
             series: data.graphs.map((element: any, index: number) => {
                 var temp = element.valueField; return {
@@ -179,11 +198,12 @@ export class AppComponent implements OnInit {
                                 valueField: temp, 
                                 value: [
                                     element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
-                                    Number(element[temp])
+                                    Number(element[temp]).toFixed(0)
                                 ], 
                                 qStartDate: element.qStartDate, 
                                 qEndDate: element.qEndDate,
-                                name : element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6)
+                                name : element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
+                                evolution : 'evolution', //TODO with config Object
                             }
                     }),
                     itemStyle: {
