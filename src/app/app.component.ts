@@ -141,6 +141,7 @@ export class AppComponent implements OnInit {
             tooltip: {
                 trigger: 'item',
                 formatter: function(params :any, ticket: any, callback:any) {
+                    console.log(params);
                     return  "<div>" + 
                         params.seriesName + 
                         "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" + 
@@ -175,20 +176,31 @@ export class AppComponent implements OnInit {
                         show : true,
                     }
                 },
-                type: "category",
-                boundaryGap : true,
+                type: "time",
                 //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
-                //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
+                data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
                 axisLabel: {
                     //show  :false,
-                    formatter: (function(value :any){
-                        return capitalizeFirstLetter(moment(value).format('MMMM YY'));
-                    }),
-                    fontSize : 10,
+                    formatter: {
+                        // Display year and month information on the first data of a year
+                        year: '{yearStyle|{yyyy}}\n{monthStyle|{MMM}}',
+                        month: '{monthStyle|{MMM}}'
+                    },
+                    rich: {
+                        yearStyle: {
+                            // Make yearly text more standing out
+                            color: '#000',
+                            fontWeight: 'bold'
+                        },
+                        monthStyle: {
+                            color: '#999'
+                        }
+                    }
                 },
             },
             yAxis: {
+                name : 'en ' + data.graphs[0].indicator.libuni,
                 axisLabel : {
                     formatter: (function(value :any){
                         return parseInt(value).toLocaleString();
@@ -197,7 +209,8 @@ export class AppComponent implements OnInit {
             },
 
             series: data.graphs.map((element: any, index: number) => {
-                var temp = element.valueField; return {
+                var temp = element.valueField; 
+                return {
                     name: element.title,
                     type: this.currentType,
                     data: data.datas.map((element: any) => { 
@@ -239,6 +252,19 @@ export class AppComponent implements OnInit {
                 },
             ],
         };
+
+        var isTime = true;
+        for (var s=0;  s<option.series.length; ++s){
+            console.log(option.series[s].data.length );
+            if (option.series[s].data.length <= 1){
+                isTime = false;
+                break;
+            }
+        }
+
+        if (!isTime){
+            option.xAxis.type = 'category';
+        }
 
         var optionSurface = {
             title: {
