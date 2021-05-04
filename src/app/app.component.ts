@@ -25,9 +25,16 @@ export class AppComponent implements OnInit {
     isDataSet: boolean = false;
 
     ngOnInit() {
-        this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined, { renderer: 'svg' });
+        let htmlNode =document.getElementById('main') as HTMLElement;
+        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg' });
         //this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
         //console.log()
+
+        window.onresize = () =>{
+            this.myChart.resize();
+            console.log("resized");
+        }
+
         moment.locale('fr');
         this.render();
     }
