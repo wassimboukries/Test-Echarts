@@ -139,7 +139,7 @@ export class AppComponent implements OnInit {
                         "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" + 
                         params.color + 
                         ";'></span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" + 
-                        parseInt(params.value[1]).toLocaleString() + 
+                        parseInt(params.value[1]).toLocaleString() + " " + data.graphs[0].indicator.libuni +
                         "</span></div><div>" + 
                         params.data.evolution + 
                         "</div>";
