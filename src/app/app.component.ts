@@ -31,7 +31,10 @@ export class AppComponent implements OnInit {
         //console.log()
 
         window.onresize = () =>{
-            this.myChart.resize();
+            this.myChart.resize(null, null, null, {
+                duration : 1000,
+                easing : 'cubicOut'
+            });
             console.log("resized");
         }
 
@@ -137,21 +140,24 @@ export class AppComponent implements OnInit {
                 text: data.label
             },
             //useUTC : true,
+            grid : {
+                show : true,
+            },
             graph: data.graphs,
             tooltip: {
                 trigger: 'item',
-                formatter: function(params :any, ticket: any, callback:any) {
+                formatter: function (params: any, ticket: any, callback: any) {
                     console.log(params);
-                    return  "<div>" + 
-                        params.seriesName + 
-                        "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" + 
-                        params.color + 
-                        ";'></span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" + 
+                    return "<div>" +
+                        params.seriesName +
+                        "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" +
+                        params.color +
+                        ";'></span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" +
                         parseInt(params.value[1]).toLocaleString() + " " + data.graphs[0].indicator.libuni +
-                        "</span></div><div>" + 
-                        params.data.evolution + 
+                        "</span></div><div>" +
+                        params.data.evolution +
                         "</div>";
-                  }
+                }
             },
             legend: {
                 type: "scroll",
@@ -179,13 +185,14 @@ export class AppComponent implements OnInit {
                 type: "time",
                 //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
-                data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
+                //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
+                //splitNumber : 5,
                 axisLabel: {
                     //show  :false,
                     formatter: {
                         // Display year and month information on the first data of a year
-                        year: '{yearStyle|{yyyy}}\n{monthStyle|{MMM}}',
-                        month: '{monthStyle|{MMM}}'
+                        year: '{yearStyle|{yyyy}}\n{monthStyle|{MMMM}}',
+                        month: '{monthStyle|{MMMM}}'
                     },
                     rich: {
                         yearStyle: {
@@ -218,7 +225,7 @@ export class AppComponent implements OnInit {
                                 valueField: temp, 
                                 value: [
                                     element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
-                                    Number(element[temp]).toFixed(0)
+                                    element[temp]
                                 ], 
                                 qStartDate: element.qStartDate, 
                                 qEndDate: element.qEndDate,
@@ -441,14 +448,20 @@ export class AppComponent implements OnInit {
         this.myChart.clear();//this.myChart2.clear();
 
         this.myChart.setOption(option);
-        this.myChart.on('click', 'series',
+        /*this.myChart.on('click', 'series',
             (params: any) => {
                 console.log(params);
                 if (this.currentData === 'data6') {
                     this.currentData = "data7";
                     this.render();
                 }
-            });
+            });*/
+            
+        this.myChart.getZr().on('click',
+            function (params: any) {
+                console.log(params);
+            }
+        );
         this.myChart.hideLoading();
         //this.myChart2.setOption(optionTest);
         //console.log(getKeyValue("name")(test));
