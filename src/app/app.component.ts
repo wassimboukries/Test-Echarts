@@ -26,15 +26,12 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         let htmlNode =document.getElementById('main') as HTMLElement;
-        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg' });
+        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg', height : 800});
         //this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
         //console.log()
 
         window.onresize = () =>{
-            this.myChart.resize(null, null, null, {
-                duration : 1000,
-                easing : 'cubicOut'
-            });
+            this.myChart.resize();
             console.log("resized");
         }
 
@@ -45,7 +42,7 @@ export class AppComponent implements OnInit {
     render() {
         this.myChart.dispose();
 
-        this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined, { renderer: 'svg' });
+        this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined, { renderer: 'svg'});
         this.myChart.showLoading();
         var data: any;
 
@@ -87,7 +84,7 @@ export class AppComponent implements OnInit {
             data = this.data8
         }
 
-        var surface = (this.isSurface == true) ? {} : undefined;
+        var surface = (this.isSurface == true) ? {origin : '600000'} : undefined;
 
         // specify chart configuration item and data
         var optionTest = {
@@ -136,9 +133,9 @@ export class AppComponent implements OnInit {
         };
 
         let option: any = {
-            title: {
+            /*title: {
                 text: data.label
-            },
+            },*/
             //useUTC : true,
             grid : {
                 show : true,
@@ -147,7 +144,7 @@ export class AppComponent implements OnInit {
             tooltip: {
                 trigger: 'item',
                 formatter: function (params: any, ticket: any, callback: any) {
-                    console.log(params);
+                    //console.log(params);
                     return "<div>" +
                         params.seriesName +
                         "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" +
@@ -162,13 +159,16 @@ export class AppComponent implements OnInit {
             legend: {
                 type: "scroll",
                 data: data.graphs.map((element: any) => element.title.toString()),
-                top: 'bottom',
-                height: 50,
+                //top: 'bottom',
+                //height: 50,
             },
 
             
 
             xAxis: {
+                splitLine : {
+                    show : true,
+                },
                 axisPointer : {
                     show : true,
                     type : 'line',
@@ -178,15 +178,15 @@ export class AppComponent implements OnInit {
                             return capitalizeFirstLetter(moment(object.value).format('MMMM YYYY'));
                         }),
                     } ,
-                    handle : {
-                        show : true,
-                    }
+                    //handle : {
+                       //show : true,}
+                    
                 },
                 type: "time",
                 //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
-                //splitNumber : 5,
+                splitNumber : 5,
                 axisLabel: {
                     //show  :false,
                     formatter: {
@@ -262,7 +262,7 @@ export class AppComponent implements OnInit {
 
         var isTime = true;
         for (var s=0;  s<option.series.length; ++s){
-            console.log(option.series[s].data.length );
+            //console.log(option.series[s].data.length );
             if (option.series[s].data.length <= 1){
                 isTime = false;
                 break;
@@ -398,7 +398,7 @@ export class AppComponent implements OnInit {
                 center: ['50%', '50%'],
                 //left: position[index-missedNodes]+'%',
                 //right: position[position.length -1 -index -missedNodes]+'%',
-                data: data.graphs.map((el: any, index: any) => { var temp = el.valueField; console.log(el.valueField); return { value: Number(data.datas[0][el.valueField]), name: el.title } }), //{ value : Object.values(element.indicator.lines[0])[index+2], name :element.title}}),
+                data: data.graphs.map((el: any, index: any) => { var temp = el.valueField; return { value: Number(data.datas[0][el.valueField]), name: el.title } }), //{ value : Object.values(element.indicator.lines[0])[index+2], name :element.title}}),
                 animationType: 'scale',
                 animationEasing: 'elasticOut',
                 animationDelay: function (idx: any) {
@@ -445,7 +445,7 @@ export class AppComponent implements OnInit {
         }
 
         console.log(option);
-        this.myChart.clear();//this.myChart2.clear();
+        //this.myChart.clear();//this.myChart2.clear();
 
         this.myChart.setOption(option);
         /*this.myChart.on('click', 'series',
