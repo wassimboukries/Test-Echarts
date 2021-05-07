@@ -137,8 +137,13 @@ export class AppComponent implements OnInit {
                 text: data.label
             },*/
             //useUTC : true,
-            grid : {
+            /*grid : {
                 show : true,
+            },*/
+
+            timeline : {
+                show : true,
+                data : ['2021-01-01', '2021-02-01'],
             },
             graph: data.graphs,
             tooltip: {
@@ -168,6 +173,10 @@ export class AppComponent implements OnInit {
             xAxis: {
                 splitLine : {
                     show : true,
+                },
+                boundaryGap: ['5%', '5%'],
+                axisTick: {
+                    alignWithLabel: false
                 },
                 axisPointer : {
                     show : true,
@@ -205,6 +214,7 @@ export class AppComponent implements OnInit {
                         }
                     }
                 },
+                triggerEvent : true,
             },
             yAxis: {
                 name : 'en ' + data.graphs[0].indicator.libuni,
@@ -245,13 +255,10 @@ export class AppComponent implements OnInit {
 
             dataZoom: [
                 {
-                    type: 'slider',
-                    yAxisIndex: [0],
-                },
-                {
                     id: 'dataZoomY',
                     type: 'inside',
                     yAxisIndex: [0],
+                    filterMode : "none",
                 },
                 {
                     type: 'inside',
@@ -369,6 +376,7 @@ export class AppComponent implements OnInit {
                         name: element.title,
                         radius: '75%',
                         center: ['50%', '50%'],
+                        //roseType : 'radius',
                         left: position[index - missedNodes] + '%',
                         right: position[position.length - 1 - index - missedNodes] + '%',
                         data: data.datas.map((el: any) => { return { value: Number(el[temp]), name: el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6) } }), //{ value : Object.values(element.indicator.lines[0])[index+2], name :element.title}}),
@@ -396,6 +404,7 @@ export class AppComponent implements OnInit {
                 name: data.label,
                 radius: '75%',
                 center: ['50%', '50%'],
+                //roseType : 'radius',
                 //left: position[index-missedNodes]+'%',
                 //right: position[position.length -1 -index -missedNodes]+'%',
                 data: data.graphs.map((el: any, index: any) => { var temp = el.valueField; return { value: Number(data.datas[0][el.valueField]), name: el.title } }), //{ value : Object.values(element.indicator.lines[0])[index+2], name :element.title}}),
@@ -448,20 +457,22 @@ export class AppComponent implements OnInit {
         //this.myChart.clear();//this.myChart2.clear();
 
         this.myChart.setOption(option);
-        /*this.myChart.on('click', 'series',
+        this.myChart.on(
+            'click',
             (params: any) => {
                 console.log(params);
-                if (this.currentData === 'data6') {
+                /*if (this.currentData === 'data6') {
                     this.currentData = "data7";
                     this.render();
-                }
-            });*/
+                }*/
+            }
+        );
             
-        this.myChart.getZr().on('click',
+        /*this.myChart.getZr().on('click',
             function (params: any) {
                 console.log(params);
             }
-        );
+        );*/
         this.myChart.hideLoading();
         //this.myChart2.setOption(optionTest);
         //console.log(getKeyValue("name")(test));
