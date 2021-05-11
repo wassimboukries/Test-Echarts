@@ -26,7 +26,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit() {
         let htmlNode =document.getElementById('main') as HTMLElement;
-        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg', height : 800});
+        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg', height : 600});
         //this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
         //console.log()
 
@@ -104,6 +104,24 @@ export class AppComponent implements OnInit {
             // to the first column by default.
             xAxis: {
                 type: 'category',
+                axisLabel: {
+                    //show  :false,
+                    formatter: {
+                        // Display year and month information on the first data of a year
+                        year: '{yearStyle|{yyyy}}\n{monthStyle|{MMMM}}',
+                        month: '{monthStyle|{MMMM}}'
+                    },
+                    rich: {
+                        yearStyle: {
+                            // Make yearly text more standing out
+                            color: '#000',
+                            fontWeight: 'bold'
+                        },
+                        monthStyle: {
+                            color: '#999'
+                        }
+                    }
+                },
                 //data : data.datas.map((el:any) => el['§DATE§'].substring(0,4) + "-"+ el['§DATE§'].substring(4,6)+"-" + el['§DATE§'].substring(6)),
             },
             // Declare Y axis, which is a value axis.
@@ -141,10 +159,10 @@ export class AppComponent implements OnInit {
                 show : true,
             },*/
 
-            timeline : {
+            /*timeline : {
                 show : true,
                 data : ['2021-01-01', '2021-02-01'],
-            },
+            },*/
             graph: data.graphs,
             tooltip: {
                 trigger: 'item',
@@ -174,9 +192,9 @@ export class AppComponent implements OnInit {
                 splitLine : {
                     show : true,
                 },
-                boundaryGap: ['5%', '5%'],
+                //boundaryGap: ['5%', '5%'],
                 axisTick: {
-                    alignWithLabel: false
+                    alignWithLabel: true
                 },
                 axisPointer : {
                     show : true,
@@ -191,18 +209,25 @@ export class AppComponent implements OnInit {
                        //show : true,}
                     
                 },
-                type: "time",
+                type: "category",
                 //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
-                splitNumber : 5,
+                //splitNumber : 5,
                 axisLabel: {
                     //show  :false,
-                    formatter: {
+                    formatter: (function(value : string){
+                        if (value.substring(5,7) == '01')
+                            return capitalizeFirstLetter(moment(value).format('MMMM YYYY'));
+                        return capitalizeFirstLetter(moment(value).format('MMMM'));
+                    }),
+                    
+                    
+                    /*{
                         // Display year and month information on the first data of a year
                         year: '{yearStyle|{yyyy}}\n{monthStyle|{MMMM}}',
                         month: '{monthStyle|{MMMM}}'
-                    },
+                    },*/
                     rich: {
                         yearStyle: {
                             // Make yearly text more standing out
@@ -214,7 +239,7 @@ export class AppComponent implements OnInit {
                         }
                     }
                 },
-                triggerEvent : true,
+                triggerEvent: true,
             },
             yAxis: {
                 name : 'en ' + data.graphs[0].indicator.libuni,
@@ -249,6 +274,10 @@ export class AppComponent implements OnInit {
                     areaStyle: surface,
                     smooth: this.isCourbe,
                     step: this.isStep && "middle",
+                    emphasis : {
+                        focus : 'series',
+                        //blurScope: 'series'
+                    }
                     //seriesLayoutBy : 'row'
                 };
             }),
