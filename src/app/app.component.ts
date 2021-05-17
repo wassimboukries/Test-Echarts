@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
 
     title = 'my-dream-app';
     currentType: string = 'line';
-    types: Array<string> = ['line', 'bar', 'pie', 'radar', 'surface'];
+    types: Array<string> = ['line', 'bar', 'pie', 'radar', 'surface', 'gauge'];
     datas: Array<string> = ['data1', 'data3', 'data4', 'data5', 'data6', 'data7', 'data8'];
     currentData = 'data1';
     myChart: any;
@@ -240,6 +240,7 @@ export class AppComponent implements OnInit {
                     }
                 },
                 triggerEvent: true,
+
             },
             yAxis: {
                 name : 'en ' + data.graphs[0].indicator.libuni,
@@ -247,7 +248,8 @@ export class AppComponent implements OnInit {
                     formatter: (function(value :any){
                         return parseInt(value).toLocaleString();
                     }),
-                }
+                }, 
+                //offset : -50,
             },
 
             series: data.graphs.map((element: any, index: number) => {
@@ -277,8 +279,14 @@ export class AppComponent implements OnInit {
                     emphasis : {
                         focus : 'series',
                         //blurScope: 'series'
-                    }
-                    //seriesLayoutBy : 'row'
+                    },
+                    connectNulls : true,
+                    //seriesLayoutBy : 'row',
+                    labelLine :  {
+                        show : true,
+                        smooth : true,
+                    },
+                    smoothMonotone : 'x',
                 };
             }),
 
@@ -451,20 +459,64 @@ export class AppComponent implements OnInit {
             },
             legend: {
                 type: 'scroll',
-                data: ["7 avril 2021"],
-                position: 'buttom'
             },
             radar: {
-                indicator: this.data1.graphs.map((element, index) => { return { name: element.title, max: Object.values(element.indicator.lines[0])[2] } }),
+                indicator: this.dataRadar.dataProvider.map((element, index) => { return { name: element['§HEADER§'], max : 6 } }),
 
             },
             series: [{
-                name: 'Lignes par table',
+                //name: '',
                 type: 'radar',
                 // areaStyle: {normal: {}},
-                data: [{ value: this.data1.graphs.map((element, index) => Object.values(element.indicator.lines[0])[index + 2]), name: "7 avril 2021" }],
+                areaStyle : {},
+                data: this.dataRadar.graphs.map((element : any) => {
+                    return {
+                        name : element.title,
+                        label: {
+                            show: true,
+                            formatter: function (params : any) {
+                                return params.value;
+                            }
+                        },
+                        value : this.dataRadar.dataProvider.map((element) => Number(element['0'])),
+                    }
+                }),
             }]
         }
+
+        var optionGauge;
+        if (this.currentType === 'gauge'){
+            data = this.dataGauge;
+            this.dataGauge.thresholds.sort(function(element1 : any, element2 : any) {
+                return element1.max-element2.max;
+            });
+            optionGauge = {
+                tooltip: {
+                    formatter: '{a} <br/>{b} : {c}%'
+                },
+                series: [{
+                    name: 'Pressure',
+                    type: 'gauge',
+                    detail: {
+                        formatter: '{value}'
+                    },
+                    axisLine : {
+                        lineStyle : {
+                            color : data.thresholds.map((element : any) => {
+                                return  [element.max/100, element.color];
+                            })
+                        }
+                    },
+                    data: [{
+                        value: data.value,
+                        name: 'SCORE'
+                    }]
+                }],
+                min : data.minValue,
+                max : data.maxValue,
+            }
+        }
+
         // use configuration item and data specified to show chart
         if (this.isDataSet == true) {
             option = optionTest;
@@ -480,6 +532,9 @@ export class AppComponent implements OnInit {
                 option = optionRadar;
             if (this.currentType === "surface")
                 option = optionSurface;
+            if (this.currentType === 'gauge'){
+                option = optionGauge;
+            }
         }
 
         console.log(option);
@@ -9669,6 +9724,87 @@ export class AppComponent implements OnInit {
             "#FFC107",
             "#FF9800"
         ]
+    }
+
+    dataGauge = {
+        "precision": "0",
+        "dataProvider": null,
+        "value": "19",
+        "thresholds": [
+            {
+                "min": 30,
+                "max": 100,
+                "color": "#CD5046"
+            },
+            {
+                "min": 10,
+                "max": 30,
+                "color": "#FFBE0A"
+            },
+            {
+                "min": 0,
+                "max": 5,
+                "color": "#00DCB6"
+            },
+            {
+                "min": 5,
+                "max": 10,
+                "color": "#FFFFC2"
+            }
+        ],
+        "minValue": "0",
+        "maxValue": "100",
+        "arrowColor": "#000000",
+        "XMLIndData": {
+            "BiblioType": "amcharts"
+        }
+    }
+    
+    dataRadar = {
+        "precision": "0",
+        "dataProvider": [
+            {
+                "0": "4",
+                "§HEADER§": "ENVIRONNEMENT",
+                "§HEADER_LABEL§": ""
+            },
+            {
+                "0": "5",
+                "§HEADER§": "ESTHETIQUE",
+                "§HEADER_LABEL§": ""
+            },
+            {
+                "0": "4",
+                "§HEADER§": "PERFORMANCE",
+                "§HEADER_LABEL§": ""
+            },
+            {
+                "0": "5",
+                "§HEADER§": "PRIX",
+                "§HEADER_LABEL§": ""
+            },
+            {
+                "0": "4",
+                "§HEADER§": "QUALITE",
+                "§HEADER_LABEL§": ""
+            }
+        ],
+        "displayLegend": true,
+        "legendNode": {},
+        "categoryField": "§HEADER_LABEL§",
+        "graphs": [
+            {
+                "thresholds": [],
+                "unit": "",
+                "title": "Test Critères d'appréciations",
+                "color": "#2E4670",
+                "valueField": "0",
+                "indicatorId": 0
+            }
+        ],
+        "XMLIndData": {
+            "BiblioType": "amcharts"
+        }
     }
 }
 
