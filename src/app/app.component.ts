@@ -25,12 +25,15 @@ export class AppComponent implements OnInit {
     isDataSet: boolean = false;
 
     ngOnInit() {
-        let htmlNode =document.getElementById('main') as HTMLElement;
-        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg', height : 600});
+        let htmlNode = document.getElementById('main') as HTMLElement;
+
+
+        this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg', height: 600 });
+        
         //this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
         //console.log()
 
-        window.onresize = () =>{
+        window.onresize = () => {
             this.myChart.resize();
             console.log("resized");
         }
@@ -42,7 +45,7 @@ export class AppComponent implements OnInit {
     render() {
         this.myChart.dispose();
 
-        this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined, { renderer: 'svg'});
+        this.myChart = echarts.init(document.getElementById('main') as HTMLElement, undefined, { renderer: 'svg', locale : "FR"});
         this.myChart.showLoading();
         var data: any;
 
@@ -84,7 +87,8 @@ export class AppComponent implements OnInit {
             data = this.data8
         }
 
-        var surface = (this.isSurface == true) ? {origin : '600000'} : undefined;
+        console.log(echarts.time.format('2021-05-01T03:00:00+02:00', '{dd} {MMMM} {yyyy} {HH}:{mm}', false));
+        var surface = (this.isSurface == true) ? { origin: '600000' } : undefined;
 
         // specify chart configuration item and data
         var optionTest = {
@@ -92,8 +96,9 @@ export class AppComponent implements OnInit {
                 type: "scroll",
             },
             tooltip: {
-                alwaysShowContent : true,
+                alwaysShowContent: true,
             },
+            
             //dimensions : 
             dataset: {
                 // Provide data.
@@ -151,22 +156,19 @@ export class AppComponent implements OnInit {
         };
 
         let option: any = {
-            /*title: {
+            /* title: {
                 text: data.label
-            },*/
-            //useUTC : true,
-            /*grid : {
+            }, */
+            /* grid : {
                 show : true,
-            },*/
-
-            /*timeline : {
-                show : true,
+            }, */
+            timeline : {
+                show : false,
                 data : ['2021-01-01', '2021-02-01'],
-            },*/
-            graph: data.graphs,
+            },
             tooltip: {
-                trigger: 'item',
-                formatter: function (params: any, ticket: any, callback: any) {
+                trigger: 'axis',
+                /* formatter: function (params: any, ticket: any, callback: any) {
                     //console.log(params);
                     return "<div>" +
                         params.seriesName +
@@ -177,52 +179,95 @@ export class AppComponent implements OnInit {
                         "</span></div><div>" +
                         params.data.evolution +
                         "</div>";
+                }, */
+                //className : "tooltip",
+                axisPointer : { 
+                    type : "shadow"
                 }
+                //alwaysShowContent : true,
             },
+            /* toolbox: {
+                show: true,
+                left: 'center',
+                top : '2%',
+                feature: {
+                    mark: {show: true},
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar', 'stack', 'tiled']},
+                    restore: {show: true},
+                    saveAsImage: {show: true},
+                    dataZoom : {},
+                    myTool2: {
+                        show: true,
+                        title: 'custom extension method',
+                        icon: 'image://http://echarts.baidu.com/images/favicon.png',
+                        onclick: function (){
+                            alert('myToolHandler2');
+                        }
+                    }
+                },
+                tooltip: { // same as option.tooltip
+                    show: true,
+                    /*renderMode : "html",
+                    formatter: function (param:any) {
+                        return '<div>' + param.title + '</div>'; // user-defined DOM structure
+                    },*/
+                    //backgroundColor: '#222',
+                    /*textStyle: {
+                        fontSize: 12,
+                    },*/
+                    //position: 'left',
+                    /*extraCssText: 'background-color: rgb(33, 33, 33);color: rgb(245, 245, 245);overflow: visible; position: absolute;text-align: center;min-height: 16px;line-height: 16px;z-index: 10;border-radius: 4px;display: block;padding: 2px 5px;', // user-defined CSS styles
+                    className : 'abs',
+                    appendToBody : true,
+                    alwaysShowContent : true,
+                //}
+            }, */
             legend: {
                 type: "scroll",
                 data: data.graphs.map((element: any) => element.title.toString()),
-                //top: 'bottom',
+                top : '1%',
                 //height: 50,
             },
-
-            
-
             xAxis: {
-                splitLine : {
-                    show : true,
+                splitLine: {
+                    show: true,
                 },
                 //boundaryGap: ['5%', '5%'],
                 axisTick: {
-                    alignWithLabel: true
+                    //alignWithLabel: true
                 },
-                axisPointer : {
-                    show : true,
-                    type : 'line',
-                    triggerTooltip : false,
-                    label : {
-                        formatter: (function(object :any){
+                /* max : function(value:any){
+                    console.log(value);
+                    return value.max;
+                }, */
+                /* axisPointer: {
+                    //show: true,
+                    //type: 'line',
+                    triggerTooltip: false,
+                    label: {
+                        formatter: (function (object: any) {
                             return capitalizeFirstLetter(moment(object.value).format('MMMM YYYY'));
                         }),
-                    } ,
+                    },
                     //handle : {
-                       //show : true,}
-                    
-                },
+                    //show : true,}
+
+                }, */
                 type: "category",
                 //min : data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //max :data.datas[0]['§DATE§'].substring(0, 4) + "-" + data.datas[0]['§DATE§'].substring(4, 6) + "-" + data.datas[0]['§DATE§'].substring(6),
                 //data: data.datas.map((el: any) => el['§DATE§'].substring(0, 4) + "-" + el['§DATE§'].substring(4, 6) + "-" + el['§DATE§'].substring(6)),
-                //splitNumber : 5,
+                splitNumber : 5,
                 axisLabel: {
                     //show  :false,
-                    formatter: (function(value : string){
-                        if (value.substring(5,7) == '01')
+                    formatter: (function (value: string) {
+                        if (value.substring(5, 7) == '01')
                             return capitalizeFirstLetter(moment(value).format('MMMM YYYY'));
                         return capitalizeFirstLetter(moment(value).format('MMMM'));
                     }),
-                    
-                    
+
+
                     /*{
                         // Display year and month information on the first data of a year
                         year: '{yearStyle|{yyyy}}\n{monthStyle|{MMMM}}',
@@ -243,32 +288,32 @@ export class AppComponent implements OnInit {
 
             },
             yAxis: {
-                name : 'en ' + data.graphs[0].indicator.libuni,
-                axisLabel : {
-                    formatter: (function(value :any){
+                name: 'en ' + data.graphs[0].indicator.libuni,
+                axisLabel: {
+                    formatter: (function (value: any) {
                         return parseInt(value).toLocaleString();
                     }),
-                }, 
-                //offset : -50,
+                },
+                boundaryGap : ["0%","50%"]
+                //offset : -10,
             },
-
-            series: data.graphs.map((element: any, index: number) => {
-                var temp = element.valueField; 
+            series: (data.graphs.map((element: any, index: number) => {
+                var temp = element.valueField;
                 return {
                     name: element.title,
                     type: this.currentType,
-                    data: data.datas.map((element: any) => { 
-                        return{ 
-                                valueField: temp, 
-                                value: [
-                                    element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
-                                    element[temp]
-                                ], 
-                                qStartDate: element.qStartDate, 
-                                qEndDate: element.qEndDate,
-                                name : element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
-                                evolution : 'evolution', //TODO with config Object
-                            }
+                    data: data.datas.map((element: any) => {
+                        return {
+                            valueField: temp,
+                            value: [
+                                element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
+                                element[temp]
+                            ],
+                            qStartDate: element.qStartDate,
+                            qEndDate: element.qEndDate,
+                            name: element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
+                            evolution: 'evolution', //TODO with config Object
+                        }
                     }),
                     itemStyle: {
                         color: data.colors[index]
@@ -276,26 +321,25 @@ export class AppComponent implements OnInit {
                     areaStyle: surface,
                     smooth: this.isCourbe,
                     step: this.isStep && "middle",
-                    emphasis : {
-                        focus : 'series',
+                    emphasis: {
+                        focus: 'series',
                         //blurScope: 'series'
                     },
-                    connectNulls : true,
+                    connectNulls: true,
                     //seriesLayoutBy : 'row',
-                    labelLine :  {
-                        show : true,
-                        smooth : true,
+                    labelLine: {
+                        show: true,
+                        smooth: true,
                     },
-                    smoothMonotone : 'x',
+                    smoothMonotone: 'x',
                 };
-            }),
-
+            })),
             dataZoom: [
                 {
                     id: 'dataZoomY',
                     type: 'inside',
                     yAxisIndex: [0],
-                    filterMode : "none",
+                    filterMode: "none",
                 },
                 {
                     type: 'inside',
@@ -305,15 +349,15 @@ export class AppComponent implements OnInit {
         };
 
         var isTime = true;
-        for (var s=0;  s<option.series.length; ++s){
+        for (var s = 0; s < option.series.length; ++s) {
             //console.log(option.series[s].data.length );
-            if (option.series[s].data.length <= 1){
+            if (option.series[s].data.length <= 1) {
                 isTime = false;
                 break;
             }
         }
 
-        if (!isTime){
+        if (!isTime) {
             option.xAxis.type = 'category';
         }
 
@@ -360,7 +404,7 @@ export class AppComponent implements OnInit {
                     type: 'line',
                     //areaStyle: {},
                     color: data.colors[index],
-                    stack : 'test'
+                    stack: 'test'
                 };
             }),
         }
@@ -461,34 +505,42 @@ export class AppComponent implements OnInit {
                 type: 'scroll',
             },
             radar: {
-                indicator: this.dataRadar.dataProvider.map((element, index) => { return { name: element['§HEADER§'], max : 6 } }),
-
+                indicator: this.dataRadar.dataProvider.map((element, index) => { return {
+                        name: element['§HEADER§'],
+                        max: 6,
+                        overflow : 'truncate',
+                        itemStyle : {
+                            width : 50,
+                        },
+                    } 
+                }),
             },
             series: [{
                 //name: '',
                 type: 'radar',
                 // areaStyle: {normal: {}},
-                areaStyle : {},
-                data: this.dataRadar.graphs.map((element : any) => {
+                areaStyle: {},
+                data: this.dataRadar.graphs.map((element: any) => {
                     return {
-                        name : element.title,
+                        name: element.title,
                         label: {
                             show: true,
-                            formatter: function (params : any) {
+                            formatter: function (params: any) {
+                                console.log(params);
                                 return params.value;
                             }
                         },
-                        value : this.dataRadar.dataProvider.map((element) => Number(element['0'])),
+                        value: this.dataRadar.dataProvider.map((element) => Number(element['0'])),
                     }
                 }),
             }]
         }
 
         var optionGauge;
-        if (this.currentType === 'gauge'){
+        if (this.currentType === 'gauge') {
             data = this.dataGauge;
-            this.dataGauge.thresholds.sort(function(element1 : any, element2 : any) {
-                return element1.max-element2.max;
+            this.dataGauge.thresholds.sort(function (element1: any, element2: any) {
+                return element1.max - element2.max;
             });
             optionGauge = {
                 tooltip: {
@@ -500,10 +552,10 @@ export class AppComponent implements OnInit {
                     detail: {
                         formatter: '{value}'
                     },
-                    axisLine : {
-                        lineStyle : {
-                            color : data.thresholds.map((element : any) => {
-                                return  [element.max/100, element.color];
+                    axisLine: {
+                        lineStyle: {
+                            color: data.thresholds.map((element: any) => {
+                                return [element.max / 100, element.color];
                             })
                         }
                     },
@@ -512,8 +564,8 @@ export class AppComponent implements OnInit {
                         name: 'SCORE'
                     }]
                 }],
-                min : data.minValue,
-                max : data.maxValue,
+                min: data.minValue,
+                max: data.maxValue,
             }
         }
 
@@ -532,7 +584,7 @@ export class AppComponent implements OnInit {
                 option = optionRadar;
             if (this.currentType === "surface")
                 option = optionSurface;
-            if (this.currentType === 'gauge'){
+            if (this.currentType === 'gauge') {
                 option = optionGauge;
             }
         }
@@ -551,7 +603,7 @@ export class AppComponent implements OnInit {
                 }*/
             }
         );
-            
+
         /*this.myChart.getZr().on('click',
             function (params: any) {
                 console.log(params);
@@ -576,7 +628,7 @@ export class AppComponent implements OnInit {
     changeData(): void {
         this.render();
     }
-    
+
     data1 = {
         "root": {},
         "data": {},
@@ -9759,7 +9811,7 @@ export class AppComponent implements OnInit {
             "BiblioType": "amcharts"
         }
     }
-    
+
     dataRadar = {
         "precision": "0",
         "dataProvider": [
