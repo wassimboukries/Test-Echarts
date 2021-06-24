@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
     isStep: boolean = false;
     isSurface: boolean = false;
     isDataSet: boolean = false;
+    selectedSeriesIndex = undefined;
 
     ngOnInit() {
         let htmlNode = document.getElementById('main') as HTMLElement;
@@ -168,22 +169,25 @@ export class AppComponent implements OnInit {
             },
             tooltip: {
                 trigger: 'axis',
-                /* formatter: function (params: any, ticket: any, callback: any) {
+                formatter: function (params: any, ticket: any, callback: any) {
                     //console.log(params);
-                    return "<div>" +
-                        params.seriesName +
-                        "</div><div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" +
-                        params.color +
-                        ";'></span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" +
-                        parseInt(params.value[1]).toLocaleString() + " " + data.graphs[0].indicator.libuni +
-                        "</span></div><div>" +
-                        params.data.evolution +
-                        "</div>";
-                }, */
+                    console.log(params[0].seletedSeriesIndex);
+                    var tooltip = "<div>";
+                    tooltip += "<div>" + params[0].axisValueLabel + "</div>";
+                    for (var param of params){
+                        tooltip +=  "<div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" +
+                        param.color + ";'></span style='margin-left :10px;'><span>"+ param.seriesName +"</span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" +
+                        parseInt(param.value[1]).toLocaleString() + " " + data.graphs[0].indicator.libuni +
+                        "</span></div>"
+                    }
+                    tooltip += "</div>"
+                    return tooltip;
+                },
                 //className : "tooltip",
                 axisPointer : { 
                     type : "shadow"
-                }
+                },
+                confine : true,
                 //alwaysShowContent : true,
             },
             /* toolbox: {
@@ -304,6 +308,7 @@ export class AppComponent implements OnInit {
                     type: this.currentType,
                     data: data.datas.map((element: any) => {
                         return {
+                            seletedSeriesIndex : this.selectedSeriesIndex,
                             valueField: temp,
                             value: [
                                 element['§DATE§'].substring(0, 4) + "-" + element['§DATE§'].substring(4, 6) + "-" + element['§DATE§'].substring(6),
@@ -332,6 +337,7 @@ export class AppComponent implements OnInit {
                         smooth: true,
                     },
                     smoothMonotone: 'x',
+                    selected : true
                 };
             })),
             dataZoom: [
@@ -594,15 +600,43 @@ export class AppComponent implements OnInit {
 
         this.myChart.setOption(option);
         this.myChart.on(
-            'click',
-            (params: any) => {
-                console.log(params);
-                /*if (this.currentData === 'data6') {
-                    this.currentData = "data7";
-                    this.render();
-                }*/
+            'mouseover',
+            'series',
+            (paramss: any) => {
+                this.selectedSeriesIndex = paramss.seriesIndex;
+                //console.log(this.selectedSeriesIndex);
+                option.tooltip.formatter = function (params: any, ticket: any, callback: any) {
+                    //console.log(params);
+                    //console.log(paramss.seriesIndex);
+                    var tooltip = "<div>";
+                    tooltip += "<div>" + params[0].axisValueLabel + "</div>";
+                    for (var param of params){
+                        var style = ""
+                        if (param.seriesIndex === paramss.seriesIndex){
+                            style = "font-size:14px;color:#666;font-weight:900";
+                        }
+                        tooltip +=  "<div> <span style='display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:" +
+                        param.color + ";'></span><span style='margin-left :10px;"+ style + "'>"+ param.seriesName +"</span><span style='float:right;margin-left:20px;font-size:14px;color:#666;font-weight:900'>" +
+                        parseInt(param.value[1]).toLocaleString() + " " + data.graphs[0].indicator.libuni +
+                        "</span></div>"
+                    }
+                    tooltip += "</div>"
+                    console.log(tooltip);
+                    return tooltip;
+                },
+                //option = this.triggerTooltip(option);
+                this.myChart.setOption(option);
             }
         );
+
+        
+        /* this.myChart.on(
+            'mouseout',
+            'series',
+            (params: any) => {
+                this.selectedSeriesIndex = undefined;
+            }
+        ); */
 
         /*this.myChart.getZr().on('click',
             function (params: any) {
@@ -613,6 +647,15 @@ export class AppComponent implements OnInit {
         //this.myChart2.setOption(optionTest);
         //console.log(getKeyValue("name")(test));
         //console.log(Object.values(this.data.graphs[0].indicator.lines[0])[2]);
+    }
+    triggerTooltip(option : any) {
+        for (var i=0; i<option.series.length; ++i){
+            for (var j=0; j<option.series[i].data.length; ++j){
+                option.series[i].data[j].seletedSeriesIndex = this.selectedSeriesIndex;
+            }
+        }
+        //console.log(this.selectedSeriesIndex);    
+        return option;
     }
 
     changeType(): void {
