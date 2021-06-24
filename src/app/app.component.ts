@@ -171,7 +171,7 @@ export class AppComponent implements OnInit {
                 trigger: 'axis',
                 formatter: function (params: any, ticket: any, callback: any) {
                     //console.log(params);
-                    console.log(params[0].seletedSeriesIndex);
+                    //console.log(params[0].seletedSeriesIndex);
                     var tooltip = "<div>";
                     tooltip += "<div>" + params[0].axisValueLabel + "</div>";
                     for (var param of params){
@@ -621,7 +621,7 @@ export class AppComponent implements OnInit {
                         "</span></div>"
                     }
                     tooltip += "</div>"
-                    console.log(tooltip);
+                    //console.log(tooltip);
                     return tooltip;
                 },
                 //option = this.triggerTooltip(option);
