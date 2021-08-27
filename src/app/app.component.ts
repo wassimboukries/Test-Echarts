@@ -31,7 +31,7 @@ export class AppComponent implements OnInit {
 
         this.myChart = echarts.init(htmlNode, undefined, { renderer: 'svg', height: 600 });
         
-        //this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
+        this.myChart2 = echarts.init(document.getElementById('main2') as HTMLElement, undefined,{renderer: 'svg'});
         //console.log()
 
         window.onresize = () => {
@@ -415,7 +415,7 @@ export class AppComponent implements OnInit {
             }),
         }
 
-        /*option.series[0].markArea = {
+        option.series[0].markArea = {
             data: [
                 [
                     {
@@ -428,7 +428,7 @@ export class AppComponent implements OnInit {
                     }
                 ]
             ]
-        };*/
+        };
 
         var position: Array<number> = [];
 
@@ -606,7 +606,7 @@ export class AppComponent implements OnInit {
                 this.selectedSeriesIndex = paramss.seriesIndex;
                 //console.log(this.selectedSeriesIndex);
                 option.tooltip.formatter = function (params: any, ticket: any, callback: any) {
-                    //console.log(params);
+                    console.log(params);
                     //console.log(paramss.seriesIndex);
                     var tooltip = "<div>";
                     tooltip += "<div>" + params[0].axisValueLabel + "</div>";
@@ -643,8 +643,99 @@ export class AppComponent implements OnInit {
                 console.log(params);
             }
         );*/
+        var optionMain2 = {
+            title: {
+                text: 'ECharts entry example'
+            },
+            tooltip: {},
+            legend: {
+                data:['Sales']
+            },
+            xAxis: {
+                data: ["shirt","cardign","chiffon shirt","pants","heels","socks"]
+            },
+            yAxis: {},
+            series: [{
+                name: 'Sales',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+        var optionMain3 = {
+            "tooltip": {
+                "formatter": "{a} <br/>{b} : {c}%"
+            },
+            "series": [
+                {
+                    "name": "BROUSSE Anthony",
+                    "type": "gauge",
+                    "detail": {
+                        show : true,
+                        "formatter": "{value}",
+                        fontSize : 20
+                    },
+                    "pointer": {
+                        "itemStyle": {
+                            "color": "auto"
+                        },
+                        length : "80%"
+                    },
+                    splitNumber : 6,
+                    data: [{
+                            value: 96,
+                        }
+                    ],
+                    splitLine :  {
+                        show : true,
+                        distance : -5,
+                        length : 5,
+                        lineStyle: {
+                            color: '#fff',
+                            width: 4
+                        }
+                    },
+                    axisLabel : {
+                        distance : -20,
+                        fontSize : 9,
+                        formatter: function (value : any) {
+                            return value.toFixed(0);
+                        }
+                    },
+                    axisTick : {
+                        distance: -5,
+                        show : true,
+                        lineStyle: {
+                            color: '#fff',
+                            width: 2
+                        }
+                    },
+                    "min": "0",
+                    "max": "1150",
+                    "axisLine": {
+                        
+                        "lineStyle": {
+                            width : 6,
+                            "color": [
+                                [
+                                    0.34782608695652173,
+                                    "#00FF00"
+                                ],
+                                [
+                                    0.6521739130434783,
+                                    "#FFAA00"
+                                ],
+                                [
+                                    1,
+                                    "#FF0000"
+                                ]
+                            ]
+                        },
+                    }
+                }
+            ]
+        };
         this.myChart.hideLoading();
-        //this.myChart2.setOption(optionTest);
+        this.myChart2.setOption(optionMain3);
         //console.log(getKeyValue("name")(test));
         //console.log(Object.values(this.data.graphs[0].indicator.lines[0])[2]);
     }
