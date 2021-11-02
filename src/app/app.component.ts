@@ -190,10 +190,10 @@ export class AppComponent implements OnInit {
                 confine : true,
                 //alwaysShowContent : true,
             },
-            /* toolbox: {
+            toolbox: {
                 show: true,
                 left: 'center',
-                top : '2%',
+                top : 'bottom',
                 feature: {
                     mark: {show: true},
                     dataView: {show: true, readOnly: false},
@@ -212,21 +212,8 @@ export class AppComponent implements OnInit {
                 },
                 tooltip: { // same as option.tooltip
                     show: true,
-                    /*renderMode : "html",
-                    formatter: function (param:any) {
-                        return '<div>' + param.title + '</div>'; // user-defined DOM structure
-                    },*/
-                    //backgroundColor: '#222',
-                    /*textStyle: {
-                        fontSize: 12,
-                    },*/
-                    //position: 'left',
-                    /*extraCssText: 'background-color: rgb(33, 33, 33);color: rgb(245, 245, 245);overflow: visible; position: absolute;text-align: center;min-height: 16px;line-height: 16px;z-index: 10;border-radius: 4px;display: block;padding: 2px 5px;', // user-defined CSS styles
-                    className : 'abs',
-                    appendToBody : true,
-                    alwaysShowContent : true,
-                //}
-            }, */
+                }
+            },
             legend: {
                 type: "scroll",
                 data: data.graphs.map((element: any) => element.title.toString()),
@@ -254,8 +241,6 @@ export class AppComponent implements OnInit {
                             return capitalizeFirstLetter(moment(object.value).format('MMMM YYYY'));
                         }),
                     },
-                    //handle : {
-                    //show : true,}
 
                 }, */
                 type: "category",
